@@ -1,7 +1,8 @@
 package org.interguild {
+	import com.profusiongames.SkyCollisionDetection;
+	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
-	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
 	import flash.geom.Rectangle;
 
@@ -25,26 +26,28 @@ package org.interguild {
 
 		protected var RADIAN:Number = Math.PI / 180;
 
-		private var theStage:Stage;
 		private var main:Main;
 		public var hitbox:Rectangle;
 
-		private var trajectoryAngle:Number = -90;
-		private var rotationAngle:Number = 0;
+		protected var trajectoryAngle:Number = -90;
+		protected var rotationAngle:Number = 0;
 		private var steeringAngle:Number = 0;
 		private var speed:Number = 0;
 
 		private var newX:Number = 0;
 		private var newY:Number = 0;
 
+		private var firstRun:Boolean = false;
 
-		public function Car(main:Main, theStage:Stage) {
-			this.theStage = theStage;
-			this.main = main;
-		}
+		public var currentGrid:Array = null;
 
 		private var leftWheel:Sprite;
 		private var rightWheel:Sprite;
+
+
+		public function Car(main:Main) {
+			this.main = main;
+		}
 
 
 		protected function drawPlayer(spr:Bitmap):void {
@@ -98,6 +101,11 @@ package org.interguild {
 
 
 		public function onGameLoop():void {
+			if (!firstRun) {
+				newX = x;
+				newY = y;
+				firstRun = true;
+			}
 			updateControls();
 			updateMovement();
 			updateState();
@@ -242,12 +250,26 @@ package org.interguild {
 				trajectoryAngle += 360;
 			}
 		}
+		
+		
+		public function testCollisions():void{
+			var nearbyCars:Array = main.getNearbyCars(this);
+			for each(var c:Car in nearbyCars){
+//				if(c != this && SkyCollisionDetection.bitmapHitTest(c, this)){
+//					trace("crash!");
+//				}
+//				if(c != this && Math.abs(c.x - x) < 30 && Math.abs(c.y - y) < 30){
+//					trace("CRASH");
+//				}
+			}
+//			trace(nearbyCars.length);
+		}
 
 
 		private function updateState():void {
 			x = newX;
 			y = newY;
-			//			trace(x, y);
+			main.updateGrid(this);
 		}
 	}
 }

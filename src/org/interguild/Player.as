@@ -12,7 +12,7 @@ package org.interguild {
 
 
 		public function Player(main:Main, theStage:Stage) {
-			super(main, theStage);
+			super(main);
 
 			MAX_SPEED = 20;
 			MAX_SPEED_REVERSE = -20;
